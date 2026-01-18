@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
-from adapters.gemini_adapter import GeminiAdapter
-from adapters.mock_adapter import MockAdapter
-from adapters.gpt_adapter import GPTAdapter
-from adapters.groq_adapter import GroqAdapter
+from model_adapters.gemini_adapter import GeminiAdapter
+from model_adapters.mock_adapter import MockAdapter
+from model_adapters.gpt_adapter import GPTAdapter
+from model_adapters.groq_adapter import GroqAdapter
 
 # Load environment variables
 load_dotenv()
@@ -15,11 +15,13 @@ load_dotenv()
 # === CONSENSUS CONFIGURATION ===
 # Number of API calls per item for consensus
 CONSENSUS_ITERATIONS = 5
+assert CONSENSUS_ITERATIONS > 0, "CONSENSUS_ITERATIONS must be positive"
 
 # Consensus threshold as a ratio (0.0 to 1.0)
 # Automatically converted to absolute number in the verifier
 # e.g., 0.6 with 5 iterations = ceil(5 * 0.6) = 3 votes required
 CONSENSUS_THRESHOLD_RATIO = 0.6
+assert 0.0 <= CONSENSUS_THRESHOLD_RATIO <= 1.0, "CONSENSUS_THRESHOLD_RATIO must be between 0.0 and 1.0"
 
 # === ADAPTER CONFIGURATION ===
 # Default adapter to use: "groq", "gpt", "gemini", or "mock"

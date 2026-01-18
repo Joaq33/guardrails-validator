@@ -1,7 +1,7 @@
 """
 Tests for MockAdapter functionality
 """
-from adapters.mock_adapter import MockAdapter
+from model_adapters.mock_adapter import MockAdapter
 
 def test_mock_adapter_initialization():
     """Test MockAdapter can be initialized."""

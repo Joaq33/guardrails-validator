@@ -62,6 +62,7 @@ class ConsensusVerifier(HeroVerifier):
     def __init__(self, adapter, schema: Type[BaseModel], validation_task: str = "validation", 
                  iterations=3, threshold=None, logger=None, session_id: str = None, model_name: str = None):
         super().__init__(adapter, schema, validation_task)
+        assert iterations > 0, "iterations must be at least 1"
         self.iterations = iterations
         
         # Calculate threshold: if threshold is a float < 1, treat as ratio; otherwise as absolute number
@@ -69,11 +70,14 @@ class ConsensusVerifier(HeroVerifier):
             self.threshold = (iterations // 2) + 1
         elif isinstance(threshold, float) and threshold < 1.0:
             # Threshold is a ratio (e.g., 0.6 for 60%)
+            assert threshold >= 0, "threshold ratio cannot be negative"
             import math
             self.threshold = math.ceil(iterations * threshold)
         else:
             # Threshold is an absolute number
             self.threshold = int(threshold)
+            assert self.threshold >= 0, "threshold cannot be negative"
+            assert self.threshold <= iterations, f"threshold {self.threshold} cannot be greater than iterations {iterations}"
             
         self.logger = logger
         self.session_id = session_id

@@ -68,6 +68,9 @@ class ValidationLogger:
     def start_session(self, session_id: str, total_items: int, consensus_iterations: int, 
                      consensus_threshold: int, validation_task: str, adapter_type: str):
         """Log the start of a validation session."""
+        assert session_id, "session_id cannot be empty"
+        assert total_items >= 0, "total_items cannot be negative"
+        
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
@@ -96,10 +99,11 @@ class ValidationLogger:
                     metadata: Dict = None):
         """
         Log a single validation response.
-        
-        If response_data contains 'error', it's logged as an error.
-        Otherwise, each field in response_data is logged separately.
         """
+        assert session_id, "session_id cannot be empty"
+        assert item_name, "item_name cannot be empty"
+        assert iteration_number > 0, "iteration_number must be positive"
+        
         with self._get_connection() as conn:
             cursor = conn.cursor()
             timestamp = datetime.now().isoformat()

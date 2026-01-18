@@ -3,7 +3,7 @@ Integration tests for the validation system
 """
 import tempfile
 from models import HeroCapabilities
-from adapters.mock_adapter import MockAdapter
+from model_adapters.mock_adapter import MockAdapter
 from core.verifier import ConsensusVerifier
 from core.db_logger import ValidationLogger
 
