@@ -1,0 +1,45 @@
+[project]
+name = "guardrails-validator"
+version = "1.0.0"
+description = "Generic LLM validation framework with consensus checking and database logging"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["llm", "validation", "guardrails", "consensus", "ai", "pydantic"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "google-genai>=1.59.0",
+    "guardrails-ai>=0.7.2",
+    "python-dotenv>=1.2.1",
+    "pydantic>=2.0.0",
+    "openai>=1.0.0",
+    "groq>=0.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/guardrails_validator"
+Documentation = "https://github.com/yourusername/guardrails_validator#readme"
+Repository = "https://github.com/yourusername/guardrails_validator"
+Issues = "https://github.com/yourusername/guardrails_validator/issues"
+
+[project.scripts]
+guardrails-validator = "main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
