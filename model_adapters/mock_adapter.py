@@ -27,14 +27,15 @@ class MockAdapter(LLMAdapter):
         
         return {"llm_api": self}
 
-    def __call__(self, prompt: str = None, messages: list = None, **kwargs) -> str:
+    def __call__(self, prompt: str | None = None, messages: list | None = None, **kwargs) -> str:
         # Simple logic to return valid JSON based on hero name in prompt
         # Extract hero name from prompt if possible
-        if "Superman" in prompt:
-            return '{"can_fly": true, "has_super_strength": true, "gender": "male"}'
-        elif "Wonder Woman" in prompt:
-             return '{"can_fly": true, "has_super_strength": true, "gender": "female"}'
-        elif "Batman" in prompt:
-             return '{"can_fly": false, "has_super_strength": false, "gender": "male"}'
+        if prompt is not None:
+            if "Superman" in prompt:
+                return '{"can_fly": true, "has_super_strength": true, "gender": "male"}'
+            elif "Wonder Woman" in prompt:
+                 return '{"can_fly": true, "has_super_strength": true, "gender": "female"}'
+            elif "Batman" in prompt:
+                 return '{"can_fly": false, "has_super_strength": false, "gender": "male"}'
         
         return '{"can_fly": false, "has_super_strength": false, "gender": "unknown"}'

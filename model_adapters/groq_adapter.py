@@ -1,5 +1,4 @@
 import os
-from openai import OpenAI
 from llm_adapters import LLMAdapter
 
 class GroqAdapter(LLMAdapter):

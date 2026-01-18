@@ -22,7 +22,7 @@ def test_hero_capabilities_validation():
         hero = HeroCapabilities(
             can_fly=False,
             has_super_strength=False,
-            gender=gender
+            gender=gender  # type: ignore
         )
         assert hero.gender == gender
 

@@ -1,7 +1,7 @@
 import sqlite3
 import json
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Dict, Any, Optional
 from contextlib import contextmanager
 
 class ValidationLogger:
@@ -94,9 +94,9 @@ class ValidationLogger:
             conn.commit()
     
     def log_response(self, session_id: str, item_name: str, iteration_number: int,
-                    response_data: Dict[str, Any], model_name: str = None, 
-                    adapter_type: str = None, validation_task: str = None,
-                    metadata: Dict = None):
+                    response_data: Dict[str, Any], model_name: Optional[str] = None, 
+                    adapter_type: Optional[str] = None, validation_task: Optional[str] = None,
+                    metadata: Optional[Dict[str, Any]] = None):
         """
         Log a single validation response.
         """

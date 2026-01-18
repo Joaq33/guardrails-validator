@@ -12,5 +12,3 @@ class LLMAdapter(ABC):
     def get_params(self) -> dict:
         """Returns the dictionary of parameters to pass to guard()."""
         pass
-
-

@@ -11,7 +11,7 @@ def test_logger_initialization():
         db_path = f.name
     
     try:
-        logger = ValidationLogger(db_path)
+        ValidationLogger(db_path)
         assert os.path.exists(db_path)
     finally:
         if os.path.exists(db_path):

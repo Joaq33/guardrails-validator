@@ -1,5 +1,9 @@
 # 🛡️ Guardrails Validator
 
+![CI](https://github.com/yourusername/guardrails_validator/actions/workflows/ci.yml/badge.svg)
+![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 > Generic LLM validation framework with consensus checking and database logging
 
 **Guardrails Validator** is a powerful, production-ready framework for validating LLM outputs using **consensus mechanisms** across multiple API calls. Built on [Guardrails AI](https://guardrailsai.com/), it supports any Pydantic schema and works with multiple LLM providers (Groq, OpenAI, Gemini).

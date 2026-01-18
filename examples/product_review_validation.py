@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from examples.domains import product_review_config
-from examples.validation_helpers import run_validation, print_header, print_summary
+from examples.validation_helpers import run_validation, print_summary
 
 def display_review(item, result_data, field_names):
     """Custom display for product reviews."""
@@ -21,7 +21,7 @@ def display_review(item, result_data, field_names):
     print(f"\n📝 Review: \"{review_text}\"")
     
     # Show individual calls with ✓/✗ symbols
-    print(f"   Calls: ", end="")
+    print("   Calls: ", end="")
     for entry in history:
         if "error" not in entry:
             sentiment = "✓" if entry.get('is_positive') else "✗"

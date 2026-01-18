@@ -40,19 +40,20 @@ DATABASE_PATH = os.path.join(DATA_DIR, DEFAULT_DB_NAME)
 # Ensure data directory exists
 os.makedirs(DATA_DIR, exist_ok=True)
 
+
 # --- ADAPTER FACTORY ---
 
-def get_selected_adapter(adapter_type: str = None):
+def get_selected_adapter(adapter_type: str | None = None):
     """Returns the adapter instance based on type."""
     adapter_type = adapter_type or DEFAULT_ADAPTER_TYPE
-    
+
     adapters = {
         "groq": GroqAdapter,
         "gpt": GPTAdapter,
         "gemini": GeminiAdapter,
         "mock": MockAdapter
     }
-    
+
     adapter_class = adapters.get(adapter_type.lower())
     if not adapter_class:
         raise ValueError(f"Unknown adapter type: {adapter_type}")
@@ -64,6 +65,7 @@ def get_selected_adapter(adapter_type: str = None):
         print("Falling back to MockAdapter for demonstration.")
         return MockAdapter()
 
+
 def get_db_path(domain_config):
     """
     Get database path for a domain config.
@@ -74,11 +76,11 @@ def get_db_path(domain_config):
         db_path = domain_config.DATABASE_PATH
     else:
         db_path = DATABASE_PATH
-    
+
     # Ensure it's in the data directory
     if not db_path.startswith(DATA_DIR):
         # Extract just the filename and put it in data dir
         db_filename = os.path.basename(db_path)
         db_path = os.path.join(DATA_DIR, db_filename)
-    
+
     return db_path

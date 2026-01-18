@@ -29,13 +29,11 @@ class HeroVerifier:
         fields_desc = []
         for field_name, field_info in self.schema.model_fields.items():
             desc = field_info.description or field_name
-            field_type = field_info.annotation
             fields_desc.append(f"  - {field_name}: {desc}")
         
         fields_text = "\n".join(fields_desc)
         
-        # Generate schema JSON example
-        schema_json = self.schema.model_json_schema()
+        # Generate prompt
         
         prompt = f"""You are an expert at analyzing and validating information for {self.validation_task}.
 
@@ -55,12 +53,12 @@ Return ONLY valid JSON matching the required schema. Be factual and precise."""
             messages=[{"role": "user", "content": prompt}],
             **guard_kwargs
         )
-        return res.validated_output
+        return getattr(res, "validated_output", None) or {} # type: ignore
 
 
 class ConsensusVerifier(HeroVerifier):
     def __init__(self, adapter, schema: Type[BaseModel], validation_task: str = "validation", 
-                 iterations=3, threshold=None, logger=None, session_id: str = None, model_name: str = None):
+                 iterations=3, threshold=None, logger=None, session_id: str | None = None, model_name: str | None = None):
         super().__init__(adapter, schema, validation_task)
         assert iterations > 0, "iterations must be at least 1"
         self.iterations = iterations
