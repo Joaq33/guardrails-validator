@@ -1,6 +1,6 @@
 # 🛡️ Guardrails Validator
 
-![CI](https://github.com/yourusername/guardrails_validator/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Joaq33/guardrails-validator/actions/workflows/ci.yml/badge.svg)
 ![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 

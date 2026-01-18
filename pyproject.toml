@@ -31,10 +31,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/guardrails_validator"
-Documentation = "https://github.com/yourusername/guardrails_validator#readme"
-Repository = "https://github.com/yourusername/guardrails_validator"
-Issues = "https://github.com/yourusername/guardrails_validator/issues"
+Homepage = "https://github.com/Joaq33/guardrails-validator"
+Documentation = "https://github.com/Joaq33/guardrails-validator#readme"
+Repository = "https://github.com/Joaq33/guardrails-validator"
+Issues = "https://github.com/Joaq33/guardrails-validator/issues"
 
 [project.scripts]
 guardrails-validator = "main:main"
