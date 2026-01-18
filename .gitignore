@@ -22,7 +22,9 @@ env/
 *.db
 *.sqlite
 *.sqlite3
-validation_logs.db
+
+# Data directory
+data/
 
 # IDE
 .idea/
@@ -33,7 +35,6 @@ validation_logs.db
 
 # OS
 .DS_Store
-Thumbs.db
 
 # UV / Package Manager
 uv.lock

@@ -36,25 +36,46 @@ pip install -r requirements.txt
 echo "GROQ_API_KEY=your_api_key_here" >> .env
 ```
 
-2. **Configure your validation** (`config.py`):
-```python
-from models import HeroCapabilities
-
-VALIDATION_TASK = "superhero capabilities"
-ITEMS_TO_VALIDATE = ["Superman", "Batman", "Wonder Woman"]
-VALIDATION_SCHEMA = HeroCapabilities
-CONSENSUS_ITERATIONS = 5
-CONSENSUS_THRESHOLD = 3  # 3/5 agreement required
-```
-
-3. **Run**:
+2. **Run with default superhero validation**:
 ```bash
 uv run main.py
 ```
 
-## 📖 Usage Examples
+Or specify a custom domain:
+```bash
+uv run main.py --domain examples.domains.superhero_config
+```
 
-### Define Your Schema
+## 📖 Creating Your Own Domain
+
+### 1. Create a Domain Config
+
+Create `examples/domains/your_domain_config.py`:
+
+```python
+from pydantic import BaseModel, Field
+
+# Define your schema
+class ProductReview(BaseModel):
+    is_positive: bool = Field(description="Positive sentiment")
+    mentions_price: bool = Field(description="Price mentioned")
+    rating: int = Field(description="Star rating 1-5")
+
+# Configure validation
+VALIDATION_TASK = "product review analysis"
+ITEMS_TO_VALIDATE = ["Great product!", "Too expensive", "Love it!"]
+VALIDATION_SCHEMA = ProductReview
+```
+
+### 2. Run Your Domain
+
+```bash
+uv run main.py --domain examples.domains.your_domain_config
+```
+
+## Usage Examples
+
+### Example 1: Superhero Validation (Default)
 
 ```python
 from pydantic import BaseModel, Field
@@ -90,23 +111,30 @@ Checking Great product!...
 
 ## ⚙️ Configuration
 
-All settings in `config.py`:
+### Framework Settings (`config.py`)
+
+Controls framework behavior - **you typically don't need to modify this**:
 
 ```python
-# Validation task
-VALIDATION_TASK = "your task description"
-ITEMS_TO_VALIDATE = ["item1", "item2", ...]
-VALIDATION_SCHEMA = YourPydanticModel
-
 # Consensus settings
-CONSENSUS_ITERATIONS = 5      # Number of API calls
-CONSENSUS_THRESHOLD = 3       # Minimum agreement (3/5)
+CONSENSUS_ITERATIONS = 5           # Number of API calls
+CONSENSUS_THRESHOLD_RATIO = 0.6    # 60% agreement required
 
 # LLM provider
-DEFAULT_ADAPTER_TYPE = "groq"  # or "gpt", "gemini", "mock"
+DEFAULT_ADAPTER_TYPE = "groq"      # or "gpt", "gemini", "mock"
 
 # Database
 DATABASE_PATH = "validation_logs.db"
+```
+
+### Domain Settings (`examples/domains/your_config.py`)
+
+Define what you're validating:
+
+```python
+VALIDATION_TASK = "your task description"
+ITEMS_TO_VALIDATE = ["item1", "item2", ...]
+VALIDATION_SCHEMA = YourPydanticModel
 ```
 
 ## 🔌 Supported Providers

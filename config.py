@@ -4,27 +4,20 @@ from adapters.gemini_adapter import GeminiAdapter
 from adapters.mock_adapter import MockAdapter
 from adapters.gpt_adapter import GPTAdapter
 from adapters.groq_adapter import GroqAdapter
-from models import HeroCapabilities  # Import your schema
 
-# --- QUICK SETUP ---
+# Load environment variables
+load_dotenv()
 
-# === VALIDATION TASK CONFIGURATION ===
-# Description of what you're validating (used in prompts)
-VALIDATION_TASK = "superhero capabilities"
-
-# Items to validate (can be any list of strings)
-ITEMS_TO_VALIDATE = ["Thor", "Iron Man", "Captain America", "Wolverine","Superman", "Aquaman", "Spiderman", "Black Panther", "Hulk", "Black Widow"]
-
-# The Pydantic model schema to use for validation
-# Change this to use a different schema for different domains
-VALIDATION_SCHEMA = HeroCapabilities
+# --- FRAMEWORK CONFIGURATION ---
+# These settings control the validation framework behavior
+# Domain-specific settings (task, items, schema) are in examples/domains/
 
 # === CONSENSUS CONFIGURATION ===
 # Number of API calls per item for consensus
 CONSENSUS_ITERATIONS = 5
 
 # Consensus threshold as a ratio (0.0 to 1.0)
-# This will be automatically converted to an absolute number in the verifier
+# Automatically converted to absolute number in the verifier
 # e.g., 0.6 with 5 iterations = ceil(5 * 0.6) = 3 votes required
 CONSENSUS_THRESHOLD_RATIO = 0.6
 
@@ -33,13 +26,19 @@ CONSENSUS_THRESHOLD_RATIO = 0.6
 DEFAULT_ADAPTER_TYPE = "groq"
 
 # === DATABASE CONFIGURATION ===
-# Path to SQLite database for logging validation responses
-DATABASE_PATH = "validation_logs.db"
+# Directory for storing validation databases
+DATA_DIR = "data"
 
-# --------------------
+# Default database filename (used if domain doesn't specify one)
+DEFAULT_DB_NAME = "validation_logs.db"
 
-# Load environment variables
-load_dotenv()
+# Full default database path
+DATABASE_PATH = os.path.join(DATA_DIR, DEFAULT_DB_NAME)
+
+# Ensure data directory exists
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# --- ADAPTER FACTORY ---
 
 def get_selected_adapter(adapter_type: str = None):
     """Returns the adapter instance based on type."""
@@ -62,3 +61,22 @@ def get_selected_adapter(adapter_type: str = None):
         print(f"Initialization Error for {adapter_type}: {e}")
         print("Falling back to MockAdapter for demonstration.")
         return MockAdapter()
+
+def get_db_path(domain_config):
+    """
+    Get database path for a domain config.
+    Uses domain's DATABASE_PATH if specified, otherwise uses default.
+    Ensures the path is in the data directory.
+    """
+    if hasattr(domain_config, 'DATABASE_PATH'):
+        db_path = domain_config.DATABASE_PATH
+    else:
+        db_path = DATABASE_PATH
+    
+    # Ensure it's in the data directory
+    if not db_path.startswith(DATA_DIR):
+        # Extract just the filename and put it in data dir
+        db_filename = os.path.basename(db_path)
+        db_path = os.path.join(DATA_DIR, db_filename)
+    
+    return db_path
