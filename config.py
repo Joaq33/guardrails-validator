@@ -21,7 +21,9 @@ assert CONSENSUS_ITERATIONS > 0, "CONSENSUS_ITERATIONS must be positive"
 # Automatically converted to absolute number in the verifier
 # e.g., 0.6 with 5 iterations = ceil(5 * 0.6) = 3 votes required
 CONSENSUS_THRESHOLD_RATIO = 0.6
-assert 0.0 <= CONSENSUS_THRESHOLD_RATIO <= 1.0, "CONSENSUS_THRESHOLD_RATIO must be between 0.0 and 1.0"
+assert 0.0 <= CONSENSUS_THRESHOLD_RATIO <= 1.0, (
+    "CONSENSUS_THRESHOLD_RATIO must be between 0.0 and 1.0"
+)
 
 # === ADAPTER CONFIGURATION ===
 # Default adapter to use: "groq", "gpt", "gemini", or "mock"
@@ -43,6 +45,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 # --- ADAPTER FACTORY ---
 
+
 def get_selected_adapter(adapter_type: str | None = None):
     """Returns the adapter instance based on type."""
     adapter_type = adapter_type or DEFAULT_ADAPTER_TYPE
@@ -51,7 +54,7 @@ def get_selected_adapter(adapter_type: str | None = None):
         "groq": GroqAdapter,
         "gpt": GPTAdapter,
         "gemini": GeminiAdapter,
-        "mock": MockAdapter
+        "mock": MockAdapter,
     }
 
     adapter_class = adapters.get(adapter_type.lower())
@@ -72,7 +75,7 @@ def get_db_path(domain_config):
     Uses domain's DATABASE_PATH if specified, otherwise uses default.
     Ensures the path is in the data directory.
     """
-    if hasattr(domain_config, 'DATABASE_PATH'):
+    if hasattr(domain_config, "DATABASE_PATH"):
         db_path = domain_config.DATABASE_PATH
     else:
         db_path = DATABASE_PATH

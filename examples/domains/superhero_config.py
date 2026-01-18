@@ -1,6 +1,7 @@
 """
 Domain configuration for superhero capabilities validation.
 """
+
 from models import HeroCapabilities
 
 # What you're validating
@@ -8,16 +9,16 @@ VALIDATION_TASK = "superhero capabilities"
 
 # Items to validate
 ITEMS_TO_VALIDATE = [
-    "Thor", 
-    "Iron Man", 
-    "Captain America", 
+    "Thor",
+    "Iron Man",
+    "Captain America",
     "Wolverine",
-    "Superman", 
-    "Aquaman", 
-    "Spiderman", 
-    "Black Panther", 
-    "Hulk", 
-    "Black Widow"
+    "Superman",
+    "Aquaman",
+    "Spiderman",
+    "Black Panther",
+    "Hulk",
+    "Black Widow",
 ]
 
 # Pydantic schema to use

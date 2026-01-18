@@ -1,5 +1,6 @@
 from llm_adapters import LLMAdapter
 
+
 class MockAdapter(LLMAdapter):
     def get_params(self) -> dict:
         # Mock adapter acts differently; main.py handles it specially or we need to support it.
@@ -24,18 +25,24 @@ class MockAdapter(LLMAdapter):
         # If MockAdapter returns {"llm_api": self_callable}, then guard uses it!
         # Because `guard(llm_api=...)` is valid.
         # So MockAdapter should return `{"llm_api": self}` and implement `__call__`.
-        
+
         return {"llm_api": self}
 
-    def __call__(self, prompt: str | None = None, messages: list | None = None, **kwargs) -> str:
+    def __call__(
+        self, prompt: str | None = None, messages: list | None = None, **kwargs
+    ) -> str:
         # Simple logic to return valid JSON based on hero name in prompt
         # Extract hero name from prompt if possible
         if prompt is not None:
             if "Superman" in prompt:
                 return '{"can_fly": true, "has_super_strength": true, "gender": "male"}'
             elif "Wonder Woman" in prompt:
-                 return '{"can_fly": true, "has_super_strength": true, "gender": "female"}'
+                return (
+                    '{"can_fly": true, "has_super_strength": true, "gender": "female"}'
+                )
             elif "Batman" in prompt:
-                 return '{"can_fly": false, "has_super_strength": false, "gender": "male"}'
-        
+                return (
+                    '{"can_fly": false, "has_super_strength": false, "gender": "male"}'
+                )
+
         return '{"can_fly": false, "has_super_strength": false, "gender": "unknown"}'

@@ -1,6 +1,7 @@
 """
 Tests for MockAdapter functionality
 """
+
 from model_adapters.mock_adapter import MockAdapter
 
 

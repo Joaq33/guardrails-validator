@@ -4,11 +4,14 @@ from typing import Type
 from guardrails import Guard
 from pydantic import BaseModel
 
+
 class HeroVerifier:
-    def __init__(self, adapter, schema: Type[BaseModel], validation_task: str = "validation"):
+    def __init__(
+        self, adapter, schema: Type[BaseModel], validation_task: str = "validation"
+    ):
         """
         Initialize verifier with an adapter and Pydantic schema.
-        
+
         Args:
             adapter: LLM adapter instance
             schema: Pydantic model class to validate against
@@ -30,11 +33,11 @@ class HeroVerifier:
         for field_name, field_info in self.schema.model_fields.items():
             desc = field_info.description or field_name
             fields_desc.append(f"  - {field_name}: {desc}")
-        
+
         fields_text = "\n".join(fields_desc)
-        
+
         # Generate prompt
-        
+
         prompt = f"""You are an expert at analyzing and validating information for {self.validation_task}.
 
 Analyze the following item: "{item_name}"
@@ -43,26 +46,32 @@ Determine the following attributes accurately:
 {fields_text}
 
 Return ONLY valid JSON matching the required schema. Be factual and precise."""
-        
+
         return prompt
 
     def _call_guard(self, item_name: str) -> dict:
         prompt = self._generate_prompt(item_name)
         guard_kwargs = self.adapter.get_params()
-        res = self.guard(
-            messages=[{"role": "user", "content": prompt}],
-            **guard_kwargs
-        )
-        return getattr(res, "validated_output", None) or {} # type: ignore
+        res = self.guard(messages=[{"role": "user", "content": prompt}], **guard_kwargs)
+        return getattr(res, "validated_output", None) or {}  # type: ignore
 
 
 class ConsensusVerifier(HeroVerifier):
-    def __init__(self, adapter, schema: Type[BaseModel], validation_task: str = "validation", 
-                 iterations=3, threshold=None, logger=None, session_id: str | None = None, model_name: str | None = None):
+    def __init__(
+        self,
+        adapter,
+        schema: Type[BaseModel],
+        validation_task: str = "validation",
+        iterations=3,
+        threshold=None,
+        logger=None,
+        session_id: str | None = None,
+        model_name: str | None = None,
+    ):
         super().__init__(adapter, schema, validation_task)
         assert iterations > 0, "iterations must be at least 1"
         self.iterations = iterations
-        
+
         # Calculate threshold: if threshold is a float < 1, treat as ratio; otherwise as absolute number
         if threshold is None:
             self.threshold = (iterations // 2) + 1
@@ -70,13 +79,16 @@ class ConsensusVerifier(HeroVerifier):
             # Threshold is a ratio (e.g., 0.6 for 60%)
             assert threshold >= 0, "threshold ratio cannot be negative"
             import math
+
             self.threshold = math.ceil(iterations * threshold)
         else:
             # Threshold is an absolute number
             self.threshold = int(threshold)
             assert self.threshold >= 0, "threshold cannot be negative"
-            assert self.threshold <= iterations, f"threshold {self.threshold} cannot be greater than iterations {iterations}"
-            
+            assert self.threshold <= iterations, (
+                f"threshold {self.threshold} cannot be greater than iterations {iterations}"
+            )
+
         self.logger = logger
         self.session_id = session_id
         self.model_name = model_name
@@ -91,14 +103,14 @@ class ConsensusVerifier(HeroVerifier):
             try:
                 # Add delay to avoid RateLimitError (Groq free tier is sensitive)
                 if i > 0:
-                    time.sleep(1/559)
-                
+                    time.sleep(1 / 559)
+
                 res = self._call_guard(item_name)
                 # Normalize result to dict if it's an object
                 if not isinstance(res, dict):
                     res = res.dict()
                 history.append(res)
-                
+
                 # Log to database
                 if self.logger and self.session_id:
                     self.logger.log_response(
@@ -108,13 +120,13 @@ class ConsensusVerifier(HeroVerifier):
                         response_data=res,
                         model_name=self.model_name,
                         adapter_type=self.adapter.__class__.__name__,
-                        validation_task=self.validation_task
+                        validation_task=self.validation_task,
                     )
-                
+
             except Exception as e:
                 error_data = {"error": str(e)}
                 history.append(error_data)
-                
+
                 # Log error to database
                 if self.logger and self.session_id:
                     self.logger.log_response(
@@ -124,19 +136,16 @@ class ConsensusVerifier(HeroVerifier):
                         response_data=error_data,
                         model_name=self.model_name,
                         adapter_type=self.adapter.__class__.__name__,
-                        validation_task=self.validation_task
+                        validation_task=self.validation_task,
                     )
 
         consensus = self._calculate_consensus(history)
-        return {
-            "consensus": consensus,
-            "history": history
-        }
+        return {"consensus": consensus, "history": history}
 
     def _calculate_consensus(self, history: list) -> dict:
         # Filter out errors
         valid_history = [res for res in history if "error" not in res]
-        
+
         if not valid_history:
             return {"error": "No valid responses"}
 
@@ -149,11 +158,11 @@ class ConsensusVerifier(HeroVerifier):
             if not votes:
                 final_result[key] = None
                 continue
-            
+
             # Count votes
             counter = Counter(votes)
             most_common, count = counter.most_common(1)[0]
-            
+
             # Usage of threshold from config/params
             if count >= self.threshold:
                 final_result[key] = most_common
